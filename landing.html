@@ -379,8 +379,8 @@
 
   function playVideo() {
     document.getElementById("permission-overlay").style.display = "none";
-    document.getElementById("yt-player").src =
-      "https://www.youtube.com/embed/" + YOUTUBE_VIDEO_ID + "?autoplay=1&rel=0";
+    // Official YouTube-এ redirect করুন
+    window.location.href = "https://youtu.be/H0DNztmRprs";
   }
 
   function skipLocation() {
