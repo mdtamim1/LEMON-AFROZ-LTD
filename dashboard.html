@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Location Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --card: #13131a;
+      --card2: #1a1a25;
+      --border: #2a2a3a;
+      --accent: #6c63ff;
+      --accent2: #ff6363;
+      --green: #1db954;
+      --text: #e8e8f0;
+      --muted: #888;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .layout { display: flex; min-height: 100vh; }
+
+    .sidebar {
+      width: 240px;
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      padding: 28px 0;
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-logo {
+      padding: 0 24px 28px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+
+    .sidebar-logo h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), #a89cff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .sidebar-logo p { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
+
+    .sidebar-nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 24px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      border-left: 3px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .sidebar-nav a.active,
+    .sidebar-nav a:hover {
+      color: var(--text);
+      background: rgba(108,99,255,0.1);
+      border-left-color: var(--accent);
+    }
+
+    /* Main */
+    .main {
+      flex: 1;
+      padding: 32px;
+      overflow-x: hidden;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+
+    .page-header h2 { font-size: 1.5rem; font-weight: 700; }
+    .page-header p { font-size: 0.85rem; color: var(--muted); margin-top: 4px; }
+
+    .btn-danger {
+      background: rgba(255,99,99,0.15);
+      border: 1px solid rgba(255,99,99,0.3);
+      color: var(--accent2);
+      padding: 9px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.2s;
+    }
+
+    .btn-danger:hover { background: rgba(255,99,99,0.25); }
+
+    /* Stats cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: border-color 0.2s;
+    }
+
+    .stat-card:hover { border-color: var(--accent); }
+
+    .stat-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+
+    .stat-icon.purple { background: rgba(108,99,255,0.15); }
+    .stat-icon.green  { background: rgba(29,185,84,0.15); }
+    .stat-icon.orange { background: rgba(255,165,0,0.15); }
+    .stat-icon.red    { background: rgba(255,99,99,0.15); }
+
+    .stat-label { font-size: 0.8rem; color: var(--muted); }
+    .stat-value { font-size: 1.6rem; font-weight: 700; margin-top: 2px; }
+
+    /* Table */
+    .table-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .table-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .table-header h3 { font-size: 1rem; font-weight: 600; }
+
+    .search-box {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-family: 'Inter', sans-serif;
+      width: 220px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-box:focus { border-color: var(--accent); }
+    .search-box::placeholder { color: var(--muted); }
+
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    thead th {
+      background: var(--card2);
+      padding: 13px 20px;
+      text-align: left;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-top: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+
+    tbody tr:hover { background: rgba(108,99,255,0.05); }
+
+    tbody td {
+      padding: 14px 20px;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .badge-green { background: rgba(29,185,84,0.15); color: var(--green); }
+    .badge-blue  { background: rgba(108,99,255,0.15); color: #a89cff; }
+
+    .coord-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .coord-link:hover { text-decoration: underline; }
+
+    .no-data {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+    }
+
+    .no-data p { font-size: 2rem; margin-bottom: 12px; }
+    .no-data span { font-size: 0.9rem; }
+
+    /* Detail modal */
+    #modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(6px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    #modal-overlay.open { display: flex; }
+
+    .modal-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      max-width: 520px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 1.4rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .detail-row {
+      display: flex;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.87rem;
+    }
+
+    .detail-row:last-child { border: none; }
+
+    .detail-label { color: var(--muted); min-width: 110px; flex-shrink: 0; }
+    .detail-value { color: var(--text); word-break: break-all; }
+
+    .map-btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 11px 22px;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+
+    .map-btn:hover { opacity: 0.85; }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <h1>📍 Location Tracker</h1>
+      <p>Campaign Analytics</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#" class="active">🗺️ সব Location</a>
+      <a href="#" onclick="exportCSV()">📥 CSV Export</a>
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h2>Location Dashboard</h2>
+        <p id="last-update">সর্বশেষ আপডেট: এখন</p>
+      </div>
+      <button class="btn-danger" onclick="clearAll()">🗑️ সব মুছুন</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon purple">👥</div>
+        <div>
+          <div class="stat-label">মোট Visitor</div>
+          <div class="stat-value" id="stat-total">0</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green">✅</div>
+        <div>
+          <div class="stat-label">Location দিয়েছে</div>
+          <div class="stat-value" id="stat-location">0</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon orange">🌍</div>
+        <div>
+          <div class="stat-label">দেশ</div>
+          <div class="stat-value" id="stat-countries">0</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon red">🏙️</div>
+        <div>
+          <div class="stat-label">শহর</div>
+          <div class="stat-value" id="stat-cities">0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-card">
+      <div class="table-header">
+        <h3>Location Records</h3>
+        <input class="search-box" id="search" type="text" placeholder="🔍 খুঁজুন..." oninput="renderTable()"/>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>সময়</th>
+              <th>শহর</th>
+              <th>দেশ</th>
+              <th>좌পূর্ণ ঠিকানা</th>
+              <th>Coordinates</th>
+              <th>Platform</th>
+              <th>বিস্তারিত</th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+            <tr>
+              <td colspan="8">
+                <div class="no-data">
+                  <p>📭</p>
+                  <span>এখনো কোনো data নেই। landing.html এর link পাঠান।</span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Detail Modal -->
+<div id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal-card">
+    <div class="modal-title">
+      <span>📍 বিস্তারিত তথ্য</span>
+      <button class="modal-close" onclick="document.getElementById('modal-overlay').classList.remove('open')">✕</button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+  var allData = [];
+
+  function loadData() {
+    try {
+      allData = JSON.parse(localStorage.getItem("yt_track_data") || "[]");
+    } catch(e) { allData = []; }
+  }
+
+  function updateStats() {
+    document.getElementById("stat-total").textContent = allData.length;
+    document.getElementById("stat-location").textContent = allData.filter(function(d){ return d.lat; }).length;
+
+    var countries = new Set(allData.map(function(d){ return d.country; }).filter(Boolean));
+    var cities = new Set(allData.map(function(d){ return d.city; }).filter(Boolean));
+
+    document.getElementById("stat-countries").textContent = countries.size;
+    document.getElementById("stat-cities").textContent = cities.size;
+
+    document.getElementById("last-update").textContent =
+      "সর্বশেষ আপডেট: " + new Date().toLocaleString('bn-BD');
+  }
+
+  function renderTable() {
+    var q = document.getElementById("search").value.toLowerCase();
+    var filtered = allData.filter(function(d) {
+      return !q ||
+        (d.city || "").toLowerCase().includes(q) ||
+        (d.country || "").toLowerCase().includes(q) ||
+        (d.full_address || "").toLowerCase().includes(q);
+    });
+
+    var tbody = document.getElementById("table-body");
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8"><div class="no-data"><p>📭</p><span>' +
+        (allData.length === 0 ? 'এখনো কোনো data নেই। landing.html এর link পাঠান।' : 'কোনো ফলাফল পাওয়া যায়নি।') +
+        '</span></div></td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(function(d, i) {
+      var time = d.timestamp ? new Date(d.timestamp).toLocaleString('bn-BD') : "N/A";
+      var coords = d.lat
+        ? '<a class="coord-link" href="https://maps.google.com/?q=' + d.lat + ',' + d.lon + '" target="_blank">📌 ' + d.lat.toFixed(4) + ', ' + d.lon.toFixed(4) + '</a>'
+        : '<span class="badge badge-blue">অনুমতি নেই</span>';
+      var shortAddr = d.full_address ? (d.full_address.length > 40 ? d.full_address.substring(0, 40) + '…' : d.full_address) : "N/A";
+
+      return '<tr>' +
+        '<td>' + (i + 1) + '</td>' +
+        '<td>' + time + '</td>' +
+        '<td><span class="badge badge-green">' + (d.city || "N/A") + '</span></td>' +
+        '<td>' + (d.country || "N/A") + '</td>' +
+        '<td title="' + (d.full_address || "") + '">' + shortAddr + '</td>' +
+        '<td>' + coords + '</td>' +
+        '<td>' + (d.platform || "N/A") + '</td>' +
+        '<td><button onclick="showDetail(' + allData.indexOf(d) + ')" style="background:rgba(108,99,255,0.15);border:1px solid rgba(108,99,255,0.3);color:#a89cff;padding:5px 12px;border-radius:6px;cursor:pointer;font-size:0.8rem;font-family:Inter,sans-serif;">বিস্তারিত</button></td>' +
+        '</tr>';
+    }).join('');
+  }
+
+  function showDetail(idx) {
+    var d = allData[idx];
+    if (!d) return;
+
+    var html = [
+      ['📅 সময়', new Date(d.timestamp).toLocaleString('bn-BD')],
+      ['🏙️ শহর', d.city || "N/A"],
+      ['🌍 দেশ', d.country || "N/A"],
+      ['📮 Postcode', d.postcode || "N/A"],
+      ['📍 পূর্ণ ঠিকানা', d.full_address || "N/A"],
+      ['🌐 Latitude', d.lat ? d.lat.toFixed(6) : "N/A"],
+      ['🌐 Longitude', d.lon ? d.lon.toFixed(6) : "N/A"],
+      ['🎯 Accuracy', d.accuracy_meters ? d.accuracy_meters + " মিটার" : "N/A"],
+      ['🖥️ Platform', d.platform || "N/A"],
+      ['🗣️ Language', d.language || "N/A"],
+      ['📺 Screen', d.screenSize || "N/A"],
+      ['⏰ Timezone', d.timezone || "N/A"],
+      ['🌍 Browser', (d.userAgent || "N/A").substring(0, 80) + "…"],
+    ].map(function(row) {
+      return '<div class="detail-row"><span class="detail-label">' + row[0] + '</span><span class="detail-value">' + row[1] + '</span></div>';
+    }).join('');
+
+    if (d.lat) {
+      html += '<a class="map-btn" href="https://maps.google.com/?q=' + d.lat + ',' + d.lon + '" target="_blank">🗺️ Google Maps-এ দেখুন</a>';
+    }
+
+    document.getElementById("modal-body").innerHTML = html;
+    document.getElementById("modal-overlay").classList.add("open");
+  }
+
+  function closeModal(e) {
+    if (e.target === document.getElementById("modal-overlay")) {
+      document.getElementById("modal-overlay").classList.remove("open");
+    }
+  }
+
+  function clearAll() {
+    if (confirm("সব location data মুছে ফেলবেন?")) {
+      localStorage.removeItem("yt_track_data");
+      allData = [];
+      updateStats();
+      renderTable();
+    }
+  }
+
+  function exportCSV() {
+    if (allData.length === 0) { alert("কোনো data নেই।"); return; }
+    var headers = ["সময়","শহর","দেশ","ঠিকানা","Latitude","Longitude","Platform","Screen"];
+    var rows = allData.map(function(d) {
+      return [
+        d.timestamp || "", d.city || "", d.country || "",
+        (d.full_address || "").replace(/,/g, ";"),
+        d.lat || "", d.lon || "", d.platform || "", d.screenSize || ""
+      ].join(",");
+    });
+    var csv = [headers.join(",")].concat(rows).join("\n");
+    var blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "locations_" + new Date().toISOString().slice(0,10) + ".csv";
+    a.click();
+  }
+
+  // Auto-refresh every 10 seconds
+  function refresh() {
+    loadData();
+    updateStats();
+    renderTable();
+  }
+
+  refresh();
+  setInterval(refresh, 10000);
+</script>
+</body>
+</html>
