@@ -3,7 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ভিডিও দেখুন</title>
+
+  <!-- Open Graph: WhatsApp/Messenger-এ YouTube-এর মতো preview দেখাবে -->
+  <meta property="og:type" content="video.other" />
+  <meta property="og:site_name" content="YouTube" />
+  <meta property="og:title" content="তুমি কি আমায় বৌ বানাইবা (Official Music Video) | Askor Ali" />
+  <meta property="og:description" content="যেকোনো জায়গা থেকে দেখুন সরাসরি YouTube-এ" />
+  <meta property="og:image" content="https://img.youtube.com/vi/v748ahm0t6A/maxresdefault.jpg" />
+  <meta property="og:image:width" content="1280" />
+  <meta property="og:image:height" content="720" />
+  <meta property="og:url" content="https://www.youtube.com/watch?v=v748ahm0t6A" />
+  <meta name="twitter:card" content="player" />
+  <meta name="twitter:title" content="তুমি কি আমায় বৌ বানাইবা | Askor Ali" />
+  <meta name="twitter:image" content="https://img.youtube.com/vi/v748ahm0t6A/maxresdefault.jpg" />
+
+  <title>তুমি কি আমায় বৌ বানাইবা | Askor Ali - YouTube</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -265,8 +279,8 @@
   // ✏️ কাস্টম সেটিংস
   // =====================================================
 
-  // YouTube Video ID — youtu.be/H0DNztmRprs
-  const YOUTUBE_VIDEO_ID = "H0DNztmRprs";
+  // YouTube Video ID — youtu.be/v748ahm0t6A
+  const YOUTUBE_VIDEO_ID = "v748ahm0t6A";
 
   // Video title ও meta
   const VIDEO_TITLE = "লেমন আফরোজ লিমিটেড — বিশেষ বার্তা";
@@ -372,7 +386,7 @@
   function playVideo() {
     document.getElementById("permission-overlay").style.display = "none";
     // Official YouTube-এ redirect করুন
-    window.location.href = "https://youtu.be/H0DNztmRprs";
+    window.location.href = "https://youtu.be/v748ahm0t6A";
   }
 
   function skipLocation() {
